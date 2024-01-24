@@ -4,8 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise Javascript Account Registration</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1 style="font-size: 16px;">xercise Javascript Account Registration</h1>
+    <header>
+        <h1 style="font-size: 16px;">Exercise Javascript Account Registration</h1>
+    </header>
+    <main>
+        <article class="form-container">
+            <header>
+                <h2>Register your account</h2>
+            </header>
+            <form name="registerForm">
+                <div class="content">
+                    
+                    <div class="form-box">
+                        <label for="" class="name">Name</label>
+                        <input type="text" name="name" placeholder="Name" required>
+                    </div>
+
+                    <div class="form-box">
+                        <label for="" class="username">Username</label>
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+
+                    <div class="form-box">
+                        <label for="" class="email">Email</label>
+                        <input type="email" name="email" placeholder="Username" required value="a@b.com">
+                    </div>
+
+                    <div class="form-box">
+                        <label for="" class="password">Password</label>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <div class="form-box">
+                        <label for="" class="passwordConfirm">Confirm password</label>
+                        <input type="password" name="passwordConfirm" placeholder="Confirm password" required>
+                    </div>
+
+
+
+                    <div class="form-box submit">
+                        <button type="submit">Sign up</button>
+                    </div>
+                </div><!-- content-->
+
+                <div class="msg-box">
+                    The passwords don't match
+                </div>
+            </form>
+        </article>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>
