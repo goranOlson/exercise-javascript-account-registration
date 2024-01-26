@@ -1,8 +1,15 @@
+:root {
+    --error-color: #a00;
+}
+
 * {
-    /* margin: 0; */
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 16px;
     box-sizing: border-box;
+}
+
+h1 {
+    font-size: 16px;
 }
 
 .form-container {
@@ -25,8 +32,6 @@
     text-align: center;
 }
 
-
-
 .form-container .content {
     display: grid;
     row-gap: 16px;
@@ -41,28 +46,29 @@
     display: grid;
     row-gap: 2px;
 }
+
 .form-container .form-box.submit {
-    /* padding-top: 16px; */
     margin-top: 20px;
     margin-bottom: 10px;
-
 }
 
 .form-container .form-box label {
     color: #02024a;
     font-size: 14px;
 }
+
 .form-container .form-box input {
     height: 26px;
     border-radius: 3px;
     border: 1px solid #b1b1f2;
 }
-.form-container .form-box input.error {
-    border-color: #a00;
-}
-.form-container .form-box label.error {
-    color: #a00;
 
+.form-container .form-box input.error {
+    border-color: var(--error-color);
+}
+
+.form-container .form-box label.error {
+    color: var(--error-color);
 }
 
 .form-container button {
@@ -81,8 +87,7 @@
 .form-container .msg-box {
     min-height: 40px;
     padding: 8px 4px;
-    /* background-color: #aaa; */
-    color: #a00;
+    color: var(--error-color);
     font-weight: bold;
     text-align: center;
     font-style: italic;

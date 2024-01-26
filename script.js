@@ -1,8 +1,7 @@
-
 //--- Get form elements
 const form = document.querySelector('form[name="registerForm"]');
 
-const btn = document.querySelector('.form-container button');
+const btn = form.querySelector('.form-container button');
 
 //--- Add 'click' listener for form labels
 const lblList = form.querySelectorAll('label');
@@ -90,7 +89,10 @@ function checkPassword() {
     // handle input
     inputPwd.value = inputPwd.value.trim();
     
-    const pwdOk = (inputPwd.value.length >= 8) ? true : false;
+    // const pwdOk = (inputPwd.value.length >= 8) ? true : false;
+    const pwdOk = (!inputPwd.value || inputPwd.value.length >= 8) ? true : false;
+    // console.log('pwdOk: ' + pwdOk);
+    
     if (pwdOk) {
         inputPwd.classList.remove('error');
         inputPwd.previousElementSibling.classList.remove('error');
@@ -117,7 +119,7 @@ function checkConfirmPassword(forPwdCheck = false) {
 
     let pwdConfirmed;
 
-    if (forPwdCheck === true) {  // Check for checkPassword()
+    if (forPwdCheck === true) {  // Only check for checkPassword()
         pwdConfirmed = (forPwdCheck === true || inputPwdConfirm.value === inputPwd.value) ? true : false;
     }
     else {
