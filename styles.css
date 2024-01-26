@@ -71,6 +71,17 @@ h1 {
     color: var(--error-color);
 }
 
+.form-container .errorPassword,
+.form-container .errorConfirm {
+    display: none;
+    color: var(--error-color);
+    font-size: 15px;
+}
+.form-container .errorPassword.show,
+.form-container .errorConfirm.show {
+    display: block;
+} 
+
 .form-container button {
     height: 30px;
     background-color: navy;

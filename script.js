@@ -1,34 +1,27 @@
+const formElements = document.querySelectorAll('form[name="registerForm"]');
+// console.log(formElements);
+
+const inputPwd = formElements.item(0)[3];
+inputPwd.addEventListener('blur', testPassword);
+
+const inputPwdConfirm = formElements.item(0)[4];
+inputPwdConfirm.addEventListener('blur', testPasswordConfirmation);
+
+for (const el of formElements[0]) {  // Add label lister
+    if (el.tagName === 'INPUT') {
+        el.previousElementSibling.addEventListener("click", () => {
+            el.focus();
+        });
+    }
+}
+ 
+const btn = document.querySelector('.form-container button[type="submit"]');
+const msgBox = document.querySelector('.form-container .msg-box');
+
+
+
 //--- Get form elements
 const form = document.querySelector('form[name="registerForm"]');
-
-const btn = form.querySelector('.form-container button');
-
-//--- Add 'click' listener for form labels
-const lblList = form.querySelectorAll('label');
-for (const lbl of lblList) {
-    lbl.addEventListener("click", () => {
-        lbl.nextElementSibling.focus();
-    });
-}
-
-let inputPwd;
-let inputPwdConfirm;
-
-// Set listener on password fields
-const pwdList = form.querySelectorAll('input[type="password"]');
-
-for (const p of pwdList) {
-    if (p.name === 'passwordConfirm') {
-        inputPwdConfirm = p;
-        p.addEventListener('blur', checkConfirmPassword);
-    }
-    else if (p.name === 'password') {
-        inputPwd = p;
-        p.addEventListener('blur', checkPassword);
-    }
-}
-
-const msgBox = form.querySelector('.msg-box');
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -81,72 +74,93 @@ form.addEventListener("submit", (e) => {
     }
 });
 
-function checkPassword() {
-    // console.log('--> checkPassword()');
-
-    msgBox.innerHTML = '';  // handle msg
-
-    // handle input
+function testPassword(e = null) {
+    console.log('--> testPassword(' + e + ')');
+    let pwdOk;
     inputPwd.value = inputPwd.value.trim();
-    
-    // const pwdOk = (inputPwd.value.length >= 8) ? true : false;
-    const pwdOk = (!inputPwd.value || inputPwd.value.length >= 8) ? true : false;
-    // console.log('pwdOk: ' + pwdOk);
-    
-    if (pwdOk) {
+
+    if (!inputPwd.value || inputPwd.value.length >= 8) {
         inputPwd.classList.remove('error');
         inputPwd.previousElementSibling.classList.remove('error');
+        pwdOk = true;
     }
-    else {
+    else  {
         inputPwd.classList.add('error');
         inputPwd.previousElementSibling.classList.add('error');
+        pwdOk = false;
+    }
+    showMessage('password', !pwdOk);  // !show
+
+    if (e) {  // Handle button and msgBox from here
+         console.log('...testPassword got target');
+        // showButton(pwdOk);
+        showButton( (pwdOk && testPasswordConfirmation()) );
     }
 
-    // handle submit button + error message
-    if (!pwdOk) {
-        btn.setAttribute('disabled', 'disabled');
-        msgBox.innerHTML += "Password must be at least 8 tokens long<br>";
-    }
-    else if (checkConfirmPassword(true)) {
-        btn.removeAttribute('disabled');
-    }
-    
+     console.log('--> testPassword() ' + pwdOk);
     return pwdOk;
 }
 
-function checkConfirmPassword(forPwdCheck = false) {
-    // console.log('--> checkConfirmPassword('+ forPwdCheck +')');
-
+function testPasswordConfirmation(e = null) {
+     console.log('--> testPasswordConfirmation(' + e + ')');
     let pwdConfirmed;
+    inputPwdConfirm.value = inputPwdConfirm.value.trim();
 
-    if (forPwdCheck === true) {  // Only check for checkPassword()
-        pwdConfirmed = (forPwdCheck === true || inputPwdConfirm.value === inputPwd.value) ? true : false;
+    if (inputPwdConfirm.value === inputPwd.value) {
+        inputPwdConfirm.classList.remove('error');
+        inputPwdConfirm.previousElementSibling.classList.remove('error');
+        pwdConfirmed = true;
     }
-    else {
-        msgBox.innerHTML = '';  // handle msg
+    else  {
+        inputPwdConfirm.classList.add('error');
+        inputPwdConfirm.previousElementSibling.classList.add('error');
+        pwdConfirmed = false;
+    }
 
-        inputPwdConfirm.value = inputPwdConfirm.value.trim();  // Trim value
-        
-        pwdConfirmed = (inputPwdConfirm.value === inputPwd.value) ? true : false;
+    showMessage('passwordConfirm', !pwdConfirmed);  // !show
 
-        if (pwdConfirmed) {
-            inputPwdConfirm.classList.remove('error');
-            inputPwdConfirm.previousElementSibling.classList.remove('error');
-        }
-        else {
-            inputPwdConfirm.classList.add('error');
-            inputPwdConfirm.previousElementSibling.classList.add('error');
-            msgBox.innerHTML += "Password don't match confirmed password<br>";
-        }
+    if (e) {  // Handle button and msgBox from here
+        // console.log('...testPasswordConfirmation got target');
+        showButton( (pwdConfirmed && testPassword()) );  // + pwdOk
+    }
 
-        // handle submit button
-        if (!pwdConfirmed) {
-            btn.setAttribute('disabled', 'disabled');
-        }
-        else {
-            btn.removeAttribute('disabled');
-        }
-    }  
-
+     console.log('--> testPassword() ' + pwdConfirmed);
     return pwdConfirmed;
 }
+
+
+function showButton(show) {
+     console.log('--> showButton(' + show + ')');
+    if (show) {
+        btn.removeAttribute('disabled');
+    }
+    else {
+        btn.setAttribute('disabled', 'disabled');
+    }
+}
+
+function showMessage(inputName, show) {
+     console.log('--> showMessage(' + inputName + ', ' + show + ')');
+    if (inputName === 'password') {
+        const msg = document.querySelector('.errorPassword'); // password
+        if (show) {
+            msg.classList.add('show');
+        }
+        else {
+            msg.classList.remove('show');
+        }
+    }
+    else if (inputName === 'passwordConfirm') {
+        const msg = document.querySelector('.errorConfirm'); // password
+        if (show) {
+            msg.classList.add('show');
+        }
+        else {
+            msg.classList.remove('show');
+        }
+    }
+}
+
+
+
+
