@@ -73,6 +73,10 @@
     color: white;
     font-weight: bold;
 }
+.form-container button:disabled {
+    background-color: #ddd;
+    color: #aaa;
+}
 
 .form-container .msg-box {
     min-height: 40px;

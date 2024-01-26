@@ -1,33 +1,43 @@
-// const emailInput = document.querySelector('input[name="email"]');
-// console.log(emailInput);
 
-// Add listener for form labels
-const lblList = document.querySelectorAll('.form-container label');
-// console.log('lblList: ' + lblList.length);
+//--- Get form elements
+const form = document.querySelector('form[name="registerForm"]');
 
+const btn = document.querySelector('.form-container button');
+
+//--- Add 'click' listener for form labels
+const lblList = form.querySelectorAll('label');
 for (const lbl of lblList) {
-    // console.log(lbl.className);
     lbl.addEventListener("click", () => {
-        // console.log('clicked label ' + lbl.className);
-        // Set focus on labels input
         lbl.nextElementSibling.focus();
     });
 }
 
-const form = document.querySelector('form[name="registerForm"]');
-const msgBox = document.querySelector('.msg-box');
+let inputPwd;
+let inputPwdConfirm;
 
+// Set listener on password fields
+const pwdList = form.querySelectorAll('input[type="password"]');
 
-// console.log(form);
+for (const p of pwdList) {
+    if (p.name === 'passwordConfirm') {
+        inputPwdConfirm = p;
+        p.addEventListener('blur', checkConfirmPassword);
+    }
+    else if (p.name === 'password') {
+        inputPwd = p;
+        p.addEventListener('blur', checkPassword);
+    }
+}
+
+const msgBox = form.querySelector('.msg-box');
+
 form.addEventListener("submit", (e) => {
     e.preventDefault();
-    // console.log('form submited');
     msgBox.innerHTML = '';  // Empty error messages
 
-    // Check password length
+    // Check password length - ONLY FIRST
     let pwdInput = form.querySelector('input[name="password"]');
     let pwdValue = pwdInput.value.trim(pwdInput.value);
-    // console.log('password lenght: ' + pwdValue.length);
 
     if (pwdValue.length < 8) {
         pwdInput.classList.add('error'); // Mark as error
@@ -43,26 +53,98 @@ form.addEventListener("submit", (e) => {
     let pwdConfirmInput = form.querySelector('input[name="passwordConfirm"]');
     let pwdConfirmValue = pwdConfirmInput.value.trim(pwdConfirmInput.value);
 
-     console.log(pwdValue, pwdConfirmValue);
     if (pwdValue && pwdValue !== pwdConfirmValue) {
-        // console.log('Not the same');
         pwdConfirmInput.classList.add('error'); // Mark as error
         pwdConfirmInput.previousElementSibling.classList.add('error');
         msgBox.innerHTML += "The passwords don't match<br>";  // Show error msg
     }
     else {
-        // console.log('The same');
         pwdConfirmInput.classList.remove('error');
         pwdConfirmInput.previousElementSibling.classList.remove('error');
     }
-
-
     
-    console.log('after');
+    if (msgBox.innerHTML != '') {
+        btn.setAttribute('disabled', 'disabled');
+    }
+    else {
+        btn.removeAttribute('disabled');
 
-    // Check password === confirmed password
+        const formInputs = form.querySelectorAll('input');
 
+        const registrationData = {
+            name: formInputs.item(0).value,
+            username: formInputs.item(1).value,
+            email: formInputs.item(2).value,
+            password: formInputs.item(3).value,
+        };
 
-
+        console.log(registrationData);
+    }
 });
 
+function checkPassword() {
+    // console.log('--> checkPassword()');
+
+    msgBox.innerHTML = '';  // handle msg
+
+    // handle input
+    inputPwd.value = inputPwd.value.trim();
+    
+    const pwdOk = (inputPwd.value.length >= 8) ? true : false;
+    if (pwdOk) {
+        inputPwd.classList.remove('error');
+        inputPwd.previousElementSibling.classList.remove('error');
+    }
+    else {
+        inputPwd.classList.add('error');
+        inputPwd.previousElementSibling.classList.add('error');
+    }
+
+    // handle submit button + error message
+    if (!pwdOk) {
+        btn.setAttribute('disabled', 'disabled');
+        msgBox.innerHTML += "Password must be at least 8 tokens long<br>";
+    }
+    else if (checkConfirmPassword(true)) {
+        btn.removeAttribute('disabled');
+    }
+    
+    return pwdOk;
+}
+
+function checkConfirmPassword(forPwdCheck = false) {
+    // console.log('--> checkConfirmPassword('+ forPwdCheck +')');
+
+    let pwdConfirmed;
+
+    if (forPwdCheck === true) {  // Check for checkPassword()
+        pwdConfirmed = (forPwdCheck === true || inputPwdConfirm.value === inputPwd.value) ? true : false;
+    }
+    else {
+        msgBox.innerHTML = '';  // handle msg
+
+        inputPwdConfirm.value = inputPwdConfirm.value.trim();  // Trim value
+        
+        pwdConfirmed = (inputPwdConfirm.value === inputPwd.value) ? true : false;
+
+        if (pwdConfirmed) {
+            inputPwdConfirm.classList.remove('error');
+            inputPwdConfirm.previousElementSibling.classList.remove('error');
+        }
+        else {
+            inputPwdConfirm.classList.add('error');
+            inputPwdConfirm.previousElementSibling.classList.add('error');
+            msgBox.innerHTML += "Password don't match confirmed password<br>";
+        }
+
+        // handle submit button
+        if (!pwdConfirmed) {
+            btn.setAttribute('disabled', 'disabled');
+        }
+        else {
+            btn.removeAttribute('disabled');
+        }
+    }  
+
+    return pwdConfirmed;
+}
